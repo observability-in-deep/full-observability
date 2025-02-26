@@ -26,6 +26,7 @@ kind delete cluster
 kind create cluster --config ./cluster/install/kind.yaml
 kubectl cluster-info --context kind-kind
 
+
 # install nginx ingress controller to kind
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 kubectl rollout status -w deployment/ingress-nginx-controller -n ingress-nginx --timeout=5m
