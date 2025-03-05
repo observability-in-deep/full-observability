@@ -2,7 +2,7 @@ resource "helm_release" "prometheus-operator" {
   name       = "prometheus-operator"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
-  version    = "69.4.1"  
+  version    = "69.4.1"
   namespace  = "default"
   values = [
     file("${path.module}/values/prometheus/values.yaml")
@@ -42,4 +42,35 @@ resource "helm_release" "loki" {
   chart      = "loki-stack"
   namespace  = "default"
   version    = "2.10.2"
+}
+
+resource "kubernetes_ingress_v1" "grafana" {
+  
+  metadata {
+    name = "grafana"
+    namespace = "default"
+  }
+
+  spec {
+    rule {
+      host = "grafana.local"
+      http {
+        path {
+          path = "/"
+          backend {
+            service {
+              name = "prometheus-operator-grafana"
+              port {
+                number = 80  
+              
+            }
+           
+          }
+        }
+      }
+    }
+  }
+  
+}
+depends_on = [ helm_release.prometheus-operator ]
 }
